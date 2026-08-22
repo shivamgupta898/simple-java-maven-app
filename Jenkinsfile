@@ -1,9 +1,16 @@
 pipeline {
     agent any 
 
+    parameters {
+        choice(
+            name: 'DEPLOY_ENV',
+            choices: ['dev', 'stage', 'prod'],
+            description: 'Select deployment environment'
+        )
+    }
+
     environment {
         APP_NAME = 'simple-java-app'
-        DEPLOY_ENV = 'dev'
         DEPLOY_PATH = '/usr/share/nginx/html' 
     }
 
