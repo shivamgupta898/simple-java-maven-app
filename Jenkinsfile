@@ -1,7 +1,18 @@
 pipeline {
     agent any
 
-    stages {
+    stages { 
+        
+        stage('Environment Info') {
+            steps {
+                sh '''
+                   echo "Job Name: $JOB_NAME"
+                   echo "Build Number: $BUILD_NUMBER"
+                   echo "Workspace: $WORKSPACE"
+                   '''
+    }
+} 
+        
         stage('Build') {
             steps {
                 sh 'mvn clean compile'
