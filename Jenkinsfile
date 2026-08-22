@@ -1,5 +1,11 @@
 pipeline {
-    agent any
+    agent any 
+
+    environment {
+        APP_NAME = 'simple-java-app'
+        DEPLOY_ENV = 'dev'
+        DEPLOY_PATH = '/usr/share/nginx/html' 
+    }
 
     stages { 
         
@@ -9,9 +15,12 @@ pipeline {
                    echo "Job Name: $JOB_NAME"
                    echo "Build Number: $BUILD_NUMBER"
                    echo "Workspace: $WORKSPACE"
-                   '''
-    }
-} 
+                   echo "Application: $APP_NAME"
+                   echo "Environment: $DEPLOY_ENV"
+                   echo "Deploy Path: $DEPLOY_PATH"
+                   ''' 
+            } 
+        } 
         
         stage('Build') {
             steps {
@@ -27,7 +36,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'cp index.html /usr/share/nginx/html/index.html'
+                sh 'cp index.html $DEPLOY_PATH/index.html'
             }
         }
     }
