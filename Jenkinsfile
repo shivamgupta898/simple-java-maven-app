@@ -42,15 +42,9 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build & Test') {
             steps {
                 sh 'mvn clean package'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'mvn test'
             }
 
             post {
@@ -78,6 +72,20 @@ pipeline {
                     echo "Deployed to: $DEPLOY_PATH"
                 '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed!'
+        }
+
+        always {
+            echo 'Pipeline execution finished.'
         }
     }
 }
