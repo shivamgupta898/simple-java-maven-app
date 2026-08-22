@@ -44,7 +44,7 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean packagee'
             }
 
             post {
