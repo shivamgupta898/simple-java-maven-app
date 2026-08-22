@@ -13,5 +13,11 @@ pipeline {
                 sh 'mvn test'
             }
         }
+
+        stage('Deploy') {
+            steps {
+                sh 'cp index.html /usr/share/nginx/html/index.html'
+            }
+        }
     }
 }
