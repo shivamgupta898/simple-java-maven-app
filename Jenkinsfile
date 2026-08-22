@@ -11,7 +11,6 @@ pipeline {
 
     environment {
         APP_NAME = 'simple-java-app'
-        DEPLOY_PATH = '/usr/share/nginx/html' 
     }
 
     stages { 
@@ -24,7 +23,6 @@ pipeline {
                    echo "Workspace: $WORKSPACE"
                    echo "Application: $APP_NAME"
                    echo "Environment: $DEPLOY_ENV"
-                   echo "Deploy Path: $DEPLOY_PATH"
                    ''' 
             } 
         } 
@@ -52,9 +50,17 @@ pipeline {
         }
 
         stage('Deploy') {
-            steps {
-                sh 'cp index.html $DEPLOY_PATH/index.html'
-            }
+    steps {
+        sh '''
+            DEPLOY_PATH="/usr/share/nginx/html/$DEPLOY_ENV"
+
+            mkdir -p "$DEPLOY_PATH"
+            cp index.html "$DEPLOY_PATH/index.html"
+
+            echo "Deployed to: $DEPLOY_PATH"
+        ''' 
+    } 
         }
+
     }
 }
