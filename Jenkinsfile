@@ -8,6 +8,9 @@ pipeline {
 
     environment {
         APP_NAME = 'simple-java-app'
+        DOCKER_HUB_USER = 'shivamgupta898'
+        IMAGE_NAME = "${DOCKER_HUB_USER}/simple-java-app"
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
         DEPLOY_PATH = "/usr/share/nginx/html/${params.DEPLOY_ENV}"
     }
 
@@ -67,12 +70,26 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Docker Build & Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh """
+                        echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
+                        docker build -t \:\ -t \:latest .
+                        docker push \:\
+                        docker push \:latest
+                    """
+                }
+            }
+        }
+
+        stage('Deploy Container') {
             steps {
                 sh """
-                    mkdir -p ${DEPLOY_PATH}
-                    cp index.html ${DEPLOY_PATH}/index.html
-                    echo "Deployed to: ${DEPLOY_PATH}"
+                    docker stop java-app-container || true
+                    docker rm java-app-container || true
+                    docker run -d --name java-app-container \:latest
+                    echo "Container deployed and running successfully!"
                 """
             }
         }
@@ -81,12 +98,13 @@ pipeline {
     post {
         always {
             echo "Pipeline execution finished."
+            sh 'docker logout || true'
         }
         success {
-            echo "Pipeline completed successfully! Code Quality Passed!"
+            echo "Pipeline completed successfully! Docker image pushed & deployed!"
         }
         failure {
-            echo "Pipeline failed! Check logs or SonarQube Quality Gate."
+            echo "Pipeline failed! Check logs."
         }
     }
 }
