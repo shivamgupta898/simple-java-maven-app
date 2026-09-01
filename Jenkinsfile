@@ -73,24 +73,24 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh """
-                        echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
-                        docker build -t \:\ -t \:latest .
-                        docker push \:\
-                        docker push \:latest
-                    """
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker build -t ${IMAGE_NAME}:${IMAGE_TAG} -t ${IMAGE_NAME}:latest .
+                        docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                        docker push ${IMAGE_NAME}:latest
+                    '''
                 }
             }
         }
 
         stage('Deploy Container') {
             steps {
-                sh """
+                sh '''
                     docker stop java-app-container || true
                     docker rm java-app-container || true
-                    docker run -d --name java-app-container \:latest
+                    docker run -d --name java-app-container ${IMAGE_NAME}:latest
                     echo "Container deployed and running successfully!"
-                """
+                '''
             }
         }
     }
