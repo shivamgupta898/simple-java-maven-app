@@ -2,8 +2,8 @@ pipeline {
     agent { label 'linux-agent' }
 
     tools {
-        maven 'Maven-3.9.9'
-        jdk 'Java-21'
+        maven 'Maven-3.9.16'
+        jdk 'JDK21'
     }
 
     environment {
