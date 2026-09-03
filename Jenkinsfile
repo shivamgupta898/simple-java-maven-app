@@ -68,8 +68,17 @@ pipeline {
             steps {
                 archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
-        }
+        } 
 
+        stage('Upload Artifact to S3') {
+            steps {
+                echo "Uploading JAR artifact to S3 bucket: ${S3_BUCKET}..."
+                sh """
+                    aws s3 cp target/*.jar s3://${S3_BUCKET}/builds/build-${BUILD_NUMBER}/
+                """
+            }
+        }
+        
         stage('Docker Build & Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
