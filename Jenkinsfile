@@ -12,6 +12,7 @@ pipeline {
         IMAGE_NAME = "${DOCKER_HUB_USER}/simple-java-app"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         DEPLOY_PATH = "/usr/share/nginx/html/${params.DEPLOY_ENV}"
+        S3_BUCKET = 'shivam-maven-artifacts-builds-2026'
     }
 
     parameters {
@@ -74,7 +75,7 @@ pipeline {
 
         stage('Upload Artifact to S3') {
             steps {
-                echo "Uploading JAR artifact to S3 bucket: ${S3_BUCKET}..."
+                echo 'Uploading JAR artifact to S3 bucket: ${S3_BUCKET}...'
                 sh """
                     aws s3 cp target/*.jar s3://${S3_BUCKET}/builds/build-${BUILD_NUMBER}/
                 """
