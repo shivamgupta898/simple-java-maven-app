@@ -94,18 +94,29 @@ pipeline {
                 }
             }
         }
+        
 
-        stage('Deploy Container') {
+        stage('Deploy with Docker Compose') {
             steps {
                 sh '''
-                    docker stop java-app-container || true
-                    docker rm java-app-container || true
-                    docker run -d --name java-app-container ${IMAGE_NAME}:latest
-                    echo "Container deployed and running successfully!"
+                    echo "Deploying Multi-Container Stack (Java App + MySQL) via Docker Compose..."
+                    
+                    # 1. Purane running containers cleanly stop/remove karna
+                    docker compose down --remove-orphans || true
+                    
+                    # 2. Latest images pull karna
+                    docker compose pull
+                    
+                    # 3. Background mein containers start karna
+                    docker compose up -d
+                    
+                    # 4. Status verify karna
+                    docker compose ps
                 '''
             }
         }
     }
+    
 
     post {
         always {
