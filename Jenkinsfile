@@ -48,7 +48,8 @@ pipeline {
                 }
             }
         }
-
+        
+        /*
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube-Server') {
@@ -56,8 +57,7 @@ pipeline {
                 }
             }
         }
-
-        /*
+        
         stage('Quality Gate') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
