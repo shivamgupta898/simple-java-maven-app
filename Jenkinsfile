@@ -16,7 +16,7 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'DEPLOY_ENV', choices: ['dev', 'qa', 'prod'], description: 'Deployment Environment')
+        choice(name: 'DEPLOY_ENV', choices: ['dev', 'test', 'prod'], description: 'Deployment Environment')
     }
 
     stages {
@@ -73,6 +73,7 @@ pipeline {
             }
         } 
 
+        /*
         stage('Upload Artifact to S3') {
             steps {
                 echo 'Uploading JAR artifact to S3 bucket: ${S3_BUCKET}...'
@@ -81,6 +82,7 @@ pipeline {
                 """
             }
         }
+        */
         
         stage('Docker Build & Push') {
             steps {
