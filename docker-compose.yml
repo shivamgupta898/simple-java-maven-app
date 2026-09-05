@@ -18,7 +18,7 @@ services:
       - app-network
 
   java-app:
-    image: shivamgupta898/simple-java-maven-app:latest
+    image: shivamgupta898/simple-java-app:latest
     container_name: simple-java-app
     restart: always
     depends_on:
